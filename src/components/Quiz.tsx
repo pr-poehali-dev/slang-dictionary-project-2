@@ -24,7 +24,6 @@ const Quiz = ({ questions, title }: QuizProps) => {
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
-    setShowResult(true);
   };
 
   const handleNextQuestion = () => {
@@ -39,6 +38,7 @@ const Quiz = ({ questions, title }: QuizProps) => {
     } else {
       setQuizCompleted(true);
     }
+    setShowResult(true);
   };
 
   const restartQuiz = () => {
@@ -89,63 +89,21 @@ const Quiz = ({ questions, title }: QuizProps) => {
             {questions[currentQuestion].question}
           </h3>
           <div className="space-y-3">
-            {questions[currentQuestion].options.map((option, index) => {
-              let buttonClass =
-                "w-full p-3 text-left rounded-lg border transition-all ";
-
-              if (showResult) {
-                if (index === questions[currentQuestion].correctAnswer) {
-                  buttonClass += "border-green-500 bg-green-50 text-green-800";
-                } else if (selectedAnswer === index) {
-                  buttonClass += "border-red-500 bg-red-50 text-red-800";
-                } else {
-                  buttonClass += "border-gray-200 bg-gray-50 text-gray-600";
-                }
-              } else {
-                buttonClass +=
+            {questions[currentQuestion].options.map((option, index) => (
+              <button
+                key={index}
+                onClick={() => handleAnswerSelect(index)}
+                className={`w-full p-3 text-left rounded-lg border transition-all ${
                   selectedAnswer === index
                     ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300";
-              }
-
-              return (
-                <button
-                  key={index}
-                  onClick={() => !showResult && handleAnswerSelect(index)}
-                  disabled={showResult}
-                  className={buttonClass}
-                >
-                  <div className="flex items-center justify-between">
-                    <span>{option}</span>
-                    {showResult &&
-                      index === questions[currentQuestion].correctAnswer && (
-                        <span className="text-green-600 font-semibold">
-                          ✓ Правильно
-                        </span>
-                      )}
-                    {showResult &&
-                      selectedAnswer === index &&
-                      index !== questions[currentQuestion].correctAnswer && (
-                        <span className="text-red-600 font-semibold">
-                          ✗ Неверно
-                        </span>
-                      )}
-                  </div>
-                </button>
-              );
-            })}
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                {option}
+              </button>
+            ))}
           </div>
         </div>
-
-        {showResult && questions[currentQuestion].explanation && (
-          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 className="font-medium text-blue-900 mb-1">Объяснение:</h4>
-            <p className="text-blue-800 text-sm">
-              {questions[currentQuestion].explanation}
-            </p>
-          </div>
-        )}
-
         <Button
           onClick={handleNextQuestion}
           disabled={selectedAnswer === null}
